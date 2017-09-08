@@ -12,9 +12,15 @@
 // with the animal as the context, and 'Trogdor' as a parameter.
 // return the result of your updateAnimal invocation
 
-// CODE HERE...
-
-
+function callBinding(arr, updateAnimal, idNum) {
+  var animal = "";
+  arr.forEach(function(check) {
+    if (check.id === idNum) {
+      animal = check;
+    }
+  });
+  return updateAnimal.call(animal, "Trogdor");
+}
 
 // *************
 // * PROBLEM 2 *
@@ -27,9 +33,15 @@
 // with the context of the animal, and the array ['being majestic', 'eating rainbows'] as a parameter.
 // return the result of your updateAnimal invocation
 
-// CODE HERE...
-
-
+function applyBinding(arr, updateAnimal, idNum) {
+  var animal = "";
+  arr.forEach(function(check) {
+    if (check.id === idNum) {
+      animal = check;
+    }
+  });
+  return updateAnimal.apply(animal, ["being majestic", "eating rainbows"]);
+}
 
 // *************
 // * PROBLEM 3 *
@@ -47,9 +59,16 @@
 
 var foo;
 
-// CODE HERE...
-
-
+function promiseMe(obj) {
+  var object = obj.defer();
+  setTimeout(function() {
+    object.resolve(function() {
+      foo = "bar";
+      return foo;
+    });
+  }, 20);
+  return object.promise.then(results => results());
+}
 
 // *************
 // * PROBLEM 4 *
@@ -63,4 +82,22 @@ var foo;
 // Make an array of emails (array of strings) from the returned data (You will need to console log or debug to figure this out),
 // and then resolve the array as you complete your promise.
 
-// CODE HERE...
+function emailList(obj, req) {
+  var newObj = obj.defer();
+  let arr = [];
+
+  req.get("/api/users").then(function(res) {
+    let data = res.data;
+    for (var i in data) {
+      arr.push(data[i].email);
+    }
+  });
+
+  newObj.resolve(function() {
+    return arr;
+  });
+
+  return newObj.promise.then(function(res) {
+    return res();
+  });
+}
